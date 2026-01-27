@@ -6,5 +6,24 @@ const userMiddleware=async(req,res,next)=>{
         if(!token)
             throw new Error("Token not found")
 const payload=await jwt.verify(token,process.env.JWT_KEY)
+const {_id}=payload;
+if(!_id){
+    throw new Error("Invalid Token");
+}
+const result=await User.findById(_id)
+if(!result){
+    throw new Error("User not found");
+}
+
+const IsBlocked=await redisClient.exists(`token:${token}`);
+
+if(IsBlocked){
+    throw new Error("Invaild Token");
+    req.result=result
+    next();
     }
+}
+catch(err){
+    return res.status(401).send("Error:"+err.message);
+}
 }
