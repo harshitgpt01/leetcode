@@ -27,3 +27,5 @@ catch(err){
     return res.status(401).send("Error:"+err.message);
 }
 }
+
+module.exports=userMiddleware;
