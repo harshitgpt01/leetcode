@@ -1,4 +1,6 @@
 const jwt=require('jsonwebtoken');
+const User=require('../models/user');
+const redisClient=require('../config/redis');
 
 const userMiddleware=async(req,res,next)=>{
     try{
