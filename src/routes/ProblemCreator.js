@@ -1,12 +1,11 @@
 const express=require('express');
-const { getMaxListeners } = require('../models/user');
 const ProblemRouter=express.Router();
 
 
-ProblemRouter.post("/create",problemCreate);
-ProblemRouter.patch("/:id",problemUpdate);
-ProblemRouter.delete('/:id',problemDelete);
+ProblemRouter.post("/create",adminMiddleware,problemCreate);
+ProblemRouter.patch("/:id",updateProblem);
+ProblemRouter.delete('/:id',deleteProblem);
 
-ProblemRouter.get("/:id",problemFetch);
+ProblemRouter.get("/:id",getProblemById);
 ProblemRouter.get("/",getAllProblem);
-ProblemRouter.get("/user",solvedProblem)
+ProblemRouter.get("/user",solvedAllProblembyUser);
