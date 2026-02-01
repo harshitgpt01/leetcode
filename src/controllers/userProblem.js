@@ -1,4 +1,4 @@
-const {getLanguageById,submitBatch}=require('../utils/problemUtility')
+const {getLanguageById,submitBatch,sumitToken}=require('../utils/problemUtility')
 
 const createProblem=async(req,res)=>{
     const {title,description,difficulty,tags,visibleTestCases,startCode,referenceSolution,problemCreator}=req.body;
@@ -14,8 +14,27 @@ const createProblem=async(req,res)=>{
                 expected_output:testcases.output
             }));
             const sumitResult=await submitBatch(submissions);
+
+            const resultToken=submitResult.map((value)=>value.token);
+
+            const testResult=await  submitToken(resultToken);
+
+            for(const test of testResult){
+                if(test.status_id!=3){
+                    return res.status(400).send("Error Occured")
+                }
     }}
+
+const userProblem=await Problem.create({
+    ...req.body,
+    probelemCreator:req.result._id
+});
+res.status(201).send("Problem Created Successfully");
+    }
 catch(err){
+    res.status(400).send("Error: "+ err);
 }
 
 }
+
+module.exports={createProblem};
