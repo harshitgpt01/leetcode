@@ -3,9 +3,9 @@ const ProblemRouter=express.Router();
 
 
 ProblemRouter.post("/create",adminMiddleware,problemCreate);
-ProblemRouter.patch("/:id",updateProblem);
-ProblemRouter.delete('/:id',deleteProblem);
+ProblemRouter.patch("/update/:id",updateProblem);
+ProblemRouter.delete('/delete/:id',deleteProblem);
 
-ProblemRouter.get("/:id",getProblemById);
-ProblemRouter.get("/",getAllProblem);
+ProblemRouter.get("/ProblemById/:id",getProblemById);
+ProblemRouter.get("/getAllProblem",getAllProblem);
 ProblemRouter.get("/user",solvedAllProblembyUser);
