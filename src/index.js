@@ -4,7 +4,7 @@ require('dotenv').config();
 const main =  require('./config/db')
 const cookieParser =  require('cookie-parser');
 const authRouter = require('./routes/userAuth');
-const ProblemRouter=require('./routes/ProblemCreator0')
+const ProblemRouter=require('./routes/ProblemCreator')
 const redisClient=require('./config/redis')
 
 app.use(express.json());
