@@ -49,3 +49,7 @@ const submissionSchema = new Schema({
 }, { 
   timestamps: true
 }); 
+
+const submission=mongoose.model('Submission', submissionSchema);
+
+module.exports = submission;

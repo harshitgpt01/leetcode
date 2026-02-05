@@ -14,12 +14,11 @@ const createProblem=async(req,res)=>{
                 stdin:testcases.input,
                 expected_output:testcases.output
             }));
-            const sumitResult=await submitBatch(submissions);
+              const sumitResult=await submitBatch(submissions);
 
-            const resultToken=submitResult.map((value)=>value.token);
+            const resultToken=sumitResult.map((value)=>value.token);
 
-            const testResult=await  submitToken(resultToken);
-
+            const testResult=await  sumitToken(resultToken);
             for(const test of testResult){
                 if(test.status_id!=3){
                     return res.status(400).send("Error Occured")
@@ -74,7 +73,7 @@ const {title,description,difficulty,tags,visibleTestCases,startCode,referenceSol
 
       // ["db54881d-bcf5-4c7b-a2e3-d33fe7e25de7","ecc52a9b-ea80-4a00-ad50-4ab6cc3bb2a1","1b35ec3b-5776-48ef-b646-d5522bdeb2cc"]
       
-     const testResult = await submitToken(resultToken);
+     const testResult = await sumitToken(resultToken);
       //  console.log(testResult);
 
      for(const test of testResult){
@@ -133,6 +132,10 @@ const getAllProblem=async(req,res)=>{
         if(getProblem.length===0){
             return res.status(500).send("Err"+err);
     }
+}
+
+catch(err){
+    res.status(500).send("Error: "+err);
 }
 }
 module.exports={createProblem,updateProblem,deleteProblem,getProblemById,getAllProblem};
