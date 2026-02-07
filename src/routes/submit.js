@@ -1,7 +1,6 @@
 const express=require('express');
 const submitRouter=express.Router();
 const userMiddleware=require('../middleware/userMiddleware');
-const submitCode=require('../controllers/UserSubmission')
 const {submitCode,runcode}=require('../controllers/UserSubmission')
 
 submitRouter.post("/submit/:id",userMiddleware,submitCode);
