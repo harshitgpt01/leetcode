@@ -7,7 +7,7 @@ try{
     const userId=req.result._id;
     const problemId=req.params.id;
     const {code,language}=req.body;
-    if(!userId||!code||!problemId||language)
+    if(!userId||!code||!problemId||!language)
         return res.status(400).send("Some fields are missing");
     
     const problem=await Problem.findById(problemId);
@@ -27,7 +27,7 @@ try{
 
      const submissions = problem.hiddenTestCases.map((testcase)=>({
         source_code:code,
-        language_id: languageId,
+        language_id: LanguageId,
         stdin: testcase.input,
         expected_output: testcase.output
     }));
