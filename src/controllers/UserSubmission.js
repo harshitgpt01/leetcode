@@ -1,4 +1,4 @@
-const Submission=require("../models/submission");
+const Submission=require("../models/submissions");
 const Problem=require("../models/problem")
 const {getLanguageById,submitBatch,sumitToken}=require("../utils/problemUtility");
 
@@ -40,7 +40,7 @@ try{
     let runtime=0;
     let memory=0;
     let status="accepted";
-    let errorMessage=null;;
+    let errorMessage=null;
 
     for(const test of testResult){
         if(test.status_id==3){
@@ -68,7 +68,7 @@ submittedResult.errorMessage=errorMessage;
 
 await submittedResult.save();
 
-res.status(201).send( submittedResult);
+res.status(201).send(submittedResult);
 }
 catch(error){
     console.log(error);

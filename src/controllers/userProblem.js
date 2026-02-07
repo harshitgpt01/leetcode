@@ -27,7 +27,7 @@ const createProblem=async(req,res)=>{
 
 const userProblem=await Problem.create({
     ...req.body,
-    probelemCreator:req.result._id
+            problemCreator: req.result._id
 });
 res.status(201).send("Problem Created Successfully");
     }
@@ -138,4 +138,20 @@ catch(err){
     res.status(500).send("Error: "+err);
 }
 }
-module.exports={createProblem,updateProblem,deleteProblem,getProblemById,getAllProblem};
+
+
+const solvedAllProblembyUser=async(req,res)=>{
+    try{
+        const userId=req.result._id;
+
+        const user=await User.findById(userId).populate({
+            path:"problemSolved",
+            select:"_id title difficulty tags"
+        });
+        res.status(200).send(user.problemSolved);
+    }
+    catch(err){
+        res.status(500).send("Server Error: "+err);
+    }
+}
+module.exports={createProblem,updateProblem,deleteProblem,getProblemById,getAllProblem,solvedAllProblembyUser};
