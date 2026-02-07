@@ -76,4 +76,34 @@ catch(error){
 }
 }
 
-module.exports=submitCode;
+const runcode=async(req,res)=>{
+    try{
+        const userId=req.result._id;
+        const problemId=req.params.id;
+        const {code,language}=req.body;
+
+        if(!userId||!code||!problemId||!language){
+            return res.status(400).send("Some fields are missing");
+        }
+        const problem=await Problem.findById(problemId);
+
+        const LanguageId=getLanguageById(language);
+
+        const submissions=problem.visibleTestCases.map((testcase)=>({
+            source_code:code,
+            language_id:LanguageId,
+            stdin:testcase.input,
+            expected_output:testcase.output
+        }));
+
+        const submitResult=await submitBatch(submissions);
+        const resultToken=submitResult.map((value)=>value.token);
+        const testResult=await sumitToken(resultToken);
+
+        res.status(201).send(testResult);
+    }
+    catch(err){
+        res.status(500).send("Internal Server Error"+err);
+}
+}
+module.exports={submitCode,runcode};
