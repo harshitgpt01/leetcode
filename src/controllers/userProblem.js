@@ -1,5 +1,7 @@
 const {getLanguageById,submitBatch,sumitToken}=require('../utils/problemUtility');
 const Problem = require('../models/problem');
+const User=require('../models/user');
+const Submission=require('../models/submissions')
 
 const createProblem=async(req,res)=>{
     const {title,description,difficulty,tags,visibleTestCases,startCode,referenceSolution,problemCreator}=req.body;
@@ -154,4 +156,20 @@ const solvedAllProblembyUser=async(req,res)=>{
         res.status(500).send("Server Error: "+err);
     }
 }
-module.exports={createProblem,updateProblem,deleteProblem,getProblemById,getAllProblem,solvedAllProblembyUser};
+
+const submittedProblem=async(req,res)=>{
+    try{
+        const userId=req.result._id;
+        const problemId=req.params.pid;
+
+        const ans=await Submission.find({userId,problemId})
+
+        if(ans.length==0)
+            res.status(200).send("No Submission is present");
+        res.status(200).send(ans);
+    }
+    catch(err){
+        res.status(500).send("Internal Server Error: "+err);
+    }
+}
+module.exports={createProblem,updateProblem,deleteProblem,getProblemById,getAllProblem,solvedAllProblembyUser,submittedProblem};
