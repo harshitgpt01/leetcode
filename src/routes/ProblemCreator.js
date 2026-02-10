@@ -1,7 +1,7 @@
 const express=require('express');
 const ProblemRouter=express.Router();
 const adminMiddleware=require('../middleware/adminMiddleware');
-const {createProblem,updateProblem,deleteProblem,getProblemById,getAllProblem,solvedAllProblembyUser}=require('../controllers/userProblem')
+const {createProblem,updateProblem,deleteProblem,getProblemById,getAllProblem,solvedAllProblembyUser,submittedProblem}=require('../controllers/userProblem')
 const userMiddleware=require('../middleware/userMiddleware');
 
 ProblemRouter.post("/create",adminMiddleware,createProblem);
