@@ -18,7 +18,7 @@ method: 'POST',
     base64_encoded: 'false'
   },
   headers: {
-    'x-rapidapi-key': '02c035aacfmsh51a0d0e4deda78bp19ff3cjsn97e42028db6d',
+    'x-rapidapi-key': process.env.JUDGE0_KEY,
     'x-rapidapi-host': 'judge029.p.rapidapi.com',
     'Content-Type': 'application/json'
   },
@@ -56,7 +56,7 @@ const sumitToken=async(resultToken)=>{
     fields: '*'
   },
   headers: {
-    'x-rapidapi-key': '02c035aacfmsh51a0d0e4deda78bp19ff3cjsn97e42028db6d',
+    'x-rapidapi-key': process.env.JUDGE0_KEY,
     'x-rapidapi-host': 'judge029.p.rapidapi.com'
   }
 };
