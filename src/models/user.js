@@ -8,7 +8,7 @@ const userSchema = new Schema({
         minLength:3,
         maxLength:20
     },
-    lastName:{                 
+    lastName:{
         type:String,
         minLength:3,
         maxLength:20,
@@ -32,7 +32,11 @@ const userSchema = new Schema({
         default: 'user'
     },
     problemSolved:{
-        type:[String]
+        type:[{
+            type:Schema.Types.ObjectId,
+            ref:'problem'
+        }],
+        unique:true
     },
     password:{
         type:String,
@@ -42,9 +46,9 @@ const userSchema = new Schema({
     timestamps:true
 });
 
-userSchema.post('findOneAndDelete',async function(userInfo){
-    if(userInfo){
-        await mongoose.model('submission').deleteMany({userId:userInfo._id});
+userSchema.post('findOneAndDelete', async function (userInfo) {
+    if (userInfo) {
+      await mongoose.model('submission').deleteMany({ userId: userInfo._id });
     }
 });
 
@@ -52,4 +56,3 @@ userSchema.post('findOneAndDelete',async function(userInfo){
 const User = mongoose.model("user",userSchema);
 
 module.exports = User;
-

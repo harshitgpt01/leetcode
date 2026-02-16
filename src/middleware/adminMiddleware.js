@@ -5,31 +5,39 @@ const redisClient = require("../config/redis")
 const adminMiddleware = async (req,res,next)=>{
 
     try{
-        const {token}=req.cookies;
+
+        const {token} = req.cookies;
         if(!token)
-            throw new Error("Token not found");
+            throw new Error("Token is not persent");
 
-        const payload=jwt.verify(token,process.env.JWT_KEY);
-        const {_id}=payload;
+        const payload = jwt.verify(token,process.env.JWT_KEY);
+
+        const {_id} = payload;
+
         if(!_id){
-            throw new Error("Invaild Token");
+            throw new Error("Invalid token");
         }
-        const result=await User.findById(_id);
-        if(payload.role != 'admin'){
-            throw new Error("Invaild Token");
-        }
+
+        const result = await User.findById(_id);
+
+        if(payload.role!='admin')
+            throw new Error("Invalid Token");
+
         if(!result){
-            throw new Error("USer not found");
+            throw new Error("User Doesn't Exist");
         }
 
-        const IsBlocked=await redisClient.exists(`token:${token}`);
-        if(IsBlocked){
-            throw new Error("Invaild Token");
+        // Redis ke blockList mein persent toh nahi hai
 
-        }
-        req.result=result;
+        const IsBlocked = await redisClient.exists(`token:${token}`);
+
+        if(IsBlocked)
+            throw new Error("Invalid Token");
+
+        req.result = result;
+
+
         next();
-
     }
     catch(err){
         res.status(401).send("Error: "+ err.message)
