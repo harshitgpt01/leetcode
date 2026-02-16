@@ -7,6 +7,7 @@ const authRouter = require('./routes/userAuth');
 const ProblemRouter=require('./routes/ProblemCreator')
 const redisClient=require('./config/redis')
 const submitRouter=require("./routes/submit")
+const cors = require('cors')
 
 app.use(cors({
     origin: 'http://localhost:5173',

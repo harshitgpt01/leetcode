@@ -10,13 +10,14 @@ const adminMiddleware=require('../middleware/adminMiddleware');
 authRouter.post('/register', register);
 authRouter.post('/login', login);
 authRouter.post('/logout',userMiddleware,logout);
-authRouter.post('/adminRegister',adminMiddleware,adminRegister);
+authRouter.post('/admin/Register',adminMiddleware,adminRegister);
 authRouter.delete('/deleteProfile',userMiddleware,deleteProfile);
-authRouter.get('/getProfile',userMiddleware,(req,res)=>{
+authRouter.get('/check',userMiddleware,(req,res)=>{
     const reply={
           firstName: req.result.firstName,
         emailId: req.result.emailId,
-        _id:req.result._id
+        _id:req.result._id,
+        role:req.result.role,
     }
 
     res.status(200).json({
