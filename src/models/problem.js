@@ -4,11 +4,11 @@ const {Schema} = mongoose;
 const problemSchema = new Schema({
     title:{
         type:String,
-        required:true,
+        required:true
     },
     description:{
         type:String,
-        required:true,
+        required:true
     },
     difficulty:{
         type:String,
@@ -17,7 +17,7 @@ const problemSchema = new Schema({
     },
     tags:{
         type:String,
-        enum:['array','linkedlist','graph','dp'],               
+        enum:['array','linkedList','graph','dp'],
         required:true
     },
     visibleTestCases:[
@@ -32,10 +32,11 @@ const problemSchema = new Schema({
             },
             explanation:{
                 type:String,
-                required:true,
+                required:true
             }
         }
     ],
+
     hiddenTestCases:[
         {
             input:{
@@ -48,14 +49,20 @@ const problemSchema = new Schema({
             }
         }
     ],
-    startCode:[
+
+    startCode: [
         {
             language:{
                 type:String,
                 required:true,
+            },
+            initialCode:{
+                type:String,
+                required:true
             }
         }
     ],
+
     referenceSolution:[
         {
             language:{
@@ -64,17 +71,21 @@ const problemSchema = new Schema({
             },
             completeCode:{
                 type:String,
-                required:true,
+                required:true
             }
         }
     ],
+
     problemCreator:{
-        type:Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref:'user',
-        required:true,
+        required:true
     }
 })
 
-const Problem=mongoose.model("problem",problemSchema);
 
-module.exports=Problem;
+const Problem = mongoose.model('problem',problemSchema);
+
+module.exports = Problem;
+
+

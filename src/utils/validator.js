@@ -16,6 +16,6 @@ const validate = (data)=>{
 
     if(!validator.isStrongPassword(data.password))
         throw new Error("Week Password");
-} 
+}
 
 module.exports = validate;
