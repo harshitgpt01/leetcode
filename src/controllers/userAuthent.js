@@ -10,6 +10,7 @@ const register = async (req,res)=>{
     
     try{
         // validate the data;
+
       validate(req.body); 
       const {firstName, emailId, password}  = req.body;
 
@@ -25,6 +26,7 @@ const register = async (req,res)=>{
         _id: user._id,
         role:user.role,
     }
+    
      res.cookie('token',token,{maxAge: 60*60*1000});
      res.status(201).json({
         user:reply,
@@ -49,7 +51,7 @@ const login = async (req,res)=>{
 
         const user = await User.findOne({emailId});
 
-        const match = bcrypt.compare(password,user.password);
+        const match =await bcrypt.compare(password,user.password);
 
         if(!match)
             throw new Error("Invalid Credentials");

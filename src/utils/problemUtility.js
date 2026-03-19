@@ -13,7 +13,7 @@ const submitBatch=async(submissions)=>{
       
 const options = {
 method: 'POST',
-  url: 'https://judge029.p.rapidapi.com/submissions',
+  url: 'https://judge029.p.rapidapi.com/submissions/batch',
   params: {
     base64_encoded: 'false'
   },
@@ -49,7 +49,7 @@ const waiting = async(timer)=>{
 const sumitToken=async(resultToken)=>{
   const options={
     method: 'GET',
-  url: 'https://judge029.p.rapidapi.com/submissions/1df59684-e5e7-4ce1-9975-ff732823e37e',
+  url: 'https://judge029.p.rapidapi.com/submissions/batch',
   params: {
     tokens: resultToken.join(","),
     base64_encoded: 'false',
