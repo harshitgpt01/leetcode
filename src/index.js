@@ -14,7 +14,7 @@ const cors = require('cors')
 // console.log("Hello")
 
 app.use(cors({
-  origin: 'https://codecurse-frontend.vercel.app', // paste your actual Vercel URL
+  origin: 'https://codecurse-frontend-647m.vercel.app',
   credentials: true
 }));
 
