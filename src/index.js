@@ -18,7 +18,7 @@ app.use(cors({
     'https://codecurse-frontend-db7z.vercel.app',
     'https://codecurse-frontend-647m.vercel.app',
     'https://codecurse-frontend.vercel.app',
-    'https://codecurse-frontend-647m-9fx1njeh4.vercel.app'
+    'https://codecurse-frontend-647m-9fx1njeh4.vercel.app',
     // add ALL your vercel URLs here
     // /\.vercel\.app$/,  // ← this allows ALL vercel.app subdomains
     'http://localhost:5173',
