@@ -15,13 +15,15 @@ const cors = require('cors')
 
 app.use(cors({
   origin: [
+    'https://codecurse-frontend-db7z.vercel.app',
     'https://codecurse-frontend-647m.vercel.app',
     'http://localhost:5173',
     'http://localhost:5174',
   ],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
 app.use(express.json());
 app.use(cookieParser());
 
