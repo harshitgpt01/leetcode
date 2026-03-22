@@ -4,29 +4,21 @@ const User = require("../models/user");
 const {getLanguageById,submitBatch,sumitToken} = require("../utils/problemUtility");
 
 const submitCode = async (req,res)=>{
-   
-    // 
     try{
-      
        const userId = req.result._id;
        const problemId = req.params.id;
-
        let {code,language} = req.body;
 
       if(!userId||!code||!problemId||!language)
         return res.status(400).send("Some field missing");
-      
 
       if(language==='cpp')
         language='c++'
       
       console.log(language);
       
-    //    Fetch the problem from database
-       const problem =  await Problem.findById(problemId);
-    //    testcases(Hidden)
-    
-    //   Kya apne submission store kar du pehle....
+       const problem = await Problem.findById(problemId);
+
     const submittedResult = await Submission.create({
           userId,
           problemId,
@@ -36,8 +28,6 @@ const submitCode = async (req,res)=>{
           testCasesTotal:problem.hiddenTestCases.length
      })
 
-    //    Judge0 code ko submit karna hai
-    
     const languageId = getLanguageById(language);
    
     const submissions = problem.hiddenTestCases.map((testcase)=>({
@@ -47,21 +37,15 @@ const submitCode = async (req,res)=>{
         expected_output: testcase.output
     }));
 
-    
     const submitResult = await submitBatch(submissions);
-    
     const resultToken = submitResult.map((value)=> value.token);
-
     const testResult = await sumitToken(resultToken);
-    
 
-    // submittedResult ko update karo
     let testCasesPassed = 0;
     let runtime = 0;
     let memory = 0;
     let status = 'accepted';
     let errorMessage = null;
-
 
     for(const test of testResult){
         if(test.status_id==3){
@@ -80,19 +64,13 @@ const submitCode = async (req,res)=>{
         }
     }
 
-
-    // Store the result in Database in Submission
-    submittedResult.status   = status;
+    submittedResult.status        = status;
     submittedResult.testCasesPassed = testCasesPassed;
-    submittedResult.errorMessage = errorMessage;
-    submittedResult.runtime = runtime;
-    submittedResult.memory = memory;
+    submittedResult.errorMessage  = errorMessage;
+    submittedResult.runtime       = runtime;
+    submittedResult.memory        = memory;
 
     await submittedResult.save();
-    
-    // ProblemId ko insert karenge userSchema ke problemSolved mein if it is not persent there.
-    
-    // req.result == user Information
 
     if(!req.result.problemSolved.includes(problemId)){
       req.result.problemSolved.push(problemId);
@@ -107,7 +85,6 @@ const submitCode = async (req,res)=>{
       runtime,
       memory
     });
-       
     }
     catch(err){
       res.status(500).send("Internal Server Error "+ err);
@@ -116,24 +93,18 @@ const submitCode = async (req,res)=>{
 
 
 const runCode = async(req,res)=>{
-    
-     // 
      try{
       const userId = req.result._id;
       const problemId = req.params.id;
-
       let {code,language} = req.body;
 
      if(!userId||!code||!problemId||!language)
        return res.status(400).send("Some field missing");
 
-   //    Fetch the problem from database
-      const problem =  await Problem.findById(problemId);
-   //    testcases(Hidden)
+      const problem = await Problem.findById(problemId);
+
       if(language==='cpp')
         language='c++'
-
-   //    Judge0 code ko submit karna hai
 
    const languageId = getLanguageById(language);
 
@@ -144,11 +115,8 @@ const runCode = async(req,res)=>{
        expected_output: testcase.output
    }));
 
-
    const submitResult = await submitBatch(submissions);
-   
    const resultToken = submitResult.map((value)=> value.token);
-
    const testResult = await sumitToken(resultToken);
 
     let testCasesPassed = 0;
@@ -174,15 +142,12 @@ const runCode = async(req,res)=>{
         }
     }
 
-   
-  
    res.status(201).json({
     success:status,
     testCases: testResult,
     runtime,
     memory
    });
-      
    }
    catch(err){
      res.status(500).send("Internal Server Error "+ err);
@@ -190,26 +155,33 @@ const runCode = async(req,res)=>{
 }
 
 
-module.exports = {submitCode,runCode};
+// ✅ NEW: Get all submissions for logged-in user
+const getAllSubmissions = async (req, res) => {
+  try {
+    const userId = req.result._id;
+
+    const submissions = await Submission.find({ userId })
+      .sort({ createdAt: -1 })
+      .limit(50)
+      .populate('problemId', 'title difficulty'); // get problem title & difficulty
+
+    // format for frontend
+    const formatted = submissions.map(s => ({
+      _id:         s._id,
+      problemId:   s.problemId?._id || s.problemId,
+      problemName: s.problemId?.title || 'Unknown Problem',
+      language:    s.language,
+      status:      s.status === 'accepted' ? 'Accepted' : s.status === 'wrong' ? 'Wrong Answer' : s.status === 'error' ? 'Error' : s.status,
+      runtime:     s.runtime,
+      memory:      s.memory,
+      createdAt:   s.createdAt,
+    }));
+
+    res.status(200).json(formatted);
+  } catch (err) {
+    res.status(500).send("Error: " + err);
+  }
+};
 
 
-
-//     language_id: 54,
-//     stdin: '2 3',
-//     expected_output: '5',
-//     stdout: '5',
-//     status_id: 3,
-//     created_at: '2025-05-12T16:47:37.239Z',
-//     finished_at: '2025-05-12T16:47:37.695Z',
-//     time: '0.002',
-//     memory: 904,
-//     stderr: null,
-//     token: '611405fa-4f31-44a6-99c8-6f407bc14e73',
-
-
-// User.findByIdUpdate({
-// })
-
-//const user =  User.findById(id)
-// user.firstName = "Mohit";
-// await user.save();
+module.exports = { submitCode, runCode, getAllSubmissions };
