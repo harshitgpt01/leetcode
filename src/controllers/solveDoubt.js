@@ -74,14 +74,11 @@ You are an expert Data Structures and Algorithms (DSA) tutor specializing in hel
 Remember: Your goal is to help users learn and understand DSA concepts through the lens of the current problem, not just to provide quick answers.
 `;
 
-        // Convert messages to Groq format
-        // Gemini format: [{ role, parts: [{ text }] }]
-        // Groq format:   [{ role, content }]
         const formattedMessages = messages.map(msg => ({
-            role: msg.role === "model" ? "assistant" : msg.role, // Groq uses "assistant" not "model"
+            role: msg.role === "model" ? "assistant" : msg.role,
             content: typeof msg.content === "string"
                 ? msg.content
-                : msg.parts?.[0]?.text ?? ""  // handle Gemini-style parts
+                : msg.parts?.[0]?.text ?? ""
         }));
 
         const response = await client.chat.completions.create({
@@ -93,18 +90,64 @@ Remember: Your goal is to help users learn and understand DSA concepts through t
         });
 
         const reply = response.choices[0].message.content;
-
         console.log(reply);
-        res.status(201).json({
-            message: reply,
-        });
+        res.status(201).json({ message: reply });
 
     } catch (err) {
         console.error("solveDoubt error:", err.message);
-        res.status(500).json({
-            message: "Internal Server Error",
-        });
+        res.status(500).json({ message: "Internal Server Error" });
     }
 };
 
-module.exports = solveDoubt;
+
+// ── COMPLEXITY ANALYSER ────────────────────────────────────
+const analyseComplexity = async (req, res) => {
+    try {
+        const { code, language } = req.body;
+
+        if (!code || !language)
+            return res.status(400).json({ message: 'Code and language are required' });
+
+        const client = new Groq({ apiKey: process.env.GEMINI_KEY });
+
+        const prompt = `Analyse the time and space complexity of this ${language} code.
+Respond ONLY with a valid JSON object — no markdown, no backticks, no text outside the JSON.
+
+{
+  "timeComplexity": "O(n²)",
+  "spaceComplexity": "O(n)",
+  "bestCase": "O(n)",
+  "worstCase": "O(n²)",
+  "explanation": "2-3 sentences explaining WHY these complexities exist",
+  "loops": [
+    { "description": "Outer loop iterates n times", "complexity": "O(n)" },
+    { "description": "Inner loop iterates n-i times", "complexity": "O(n)" }
+  ],
+  "optimizationTip": "One concrete suggestion to improve the complexity"
+}
+
+Code:
+\`\`\`${language}
+${code}
+\`\`\``;
+
+        const response = await client.chat.completions.create({
+            model: "llama-3.3-70b-versatile",
+            messages: [{ role: "user", content: prompt }],
+            max_tokens: 1000,
+        });
+
+        const raw = response.choices[0]?.message?.content || '';
+        const clean = raw.replace(/```json|```/g, '').trim();
+        const result = JSON.parse(clean);
+
+        res.status(200).json(result);
+
+    } catch (err) {
+        console.error("analyseComplexity error:", err.message);
+        res.status(500).json({ message: "Analysis failed: " + err.message });
+    }
+};
+
+
+module.exports = { solveDoubt, analyseComplexity };
